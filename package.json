@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.3.0",
     "gsap": "^3.15.0",
-    "locomotive-scroll": "^5.0.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },

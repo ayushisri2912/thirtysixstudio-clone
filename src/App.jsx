@@ -1,58 +1,16 @@
-// import { useEffect } from 'react';
-// import Canvas from './Canvas';
-// import data from './data';
-// import "./index.css";
-// import LocomotiveScroll from 'locomotive-scroll';
-
-
-
-// function App () {
-
-//   useEffect(() =>{
-//     const locomotiveScroll = new LocomotiveScroll();
-//   }, []);
-//   return (
-//     <>
-//       <div className="w-full relative min-h-screen font-['Helvetica_Now_Display']">
-//             {data[0].map((canvasdets, index) => (
-//               <Canvas details={canvasdets}/>
-//             ))}
-//             <div className='w-full h-screen'>
-
-//             </div>
-//       </div>
-
-//       {/* <div className='w-full relative min-h-screen '>
-//             {data[1].map((canvasdets, index) => (
-//               <Canvas details={canvasdets}/>
-//             ))}
-//       </div>
-
-//       <div className='w-full relative min-h-screen '>
-//             {data[2].map((canvasdets, index) => (
-//               <Canvas details={canvasdets}/>
-//             ))}
-//       </div>
-//       <div className='w-full relative min-h-screen '>
-//             {data[3].map((canvasdets, index) => (
-//               <Canvas details={canvasdets}/>
-//             ))}
-//       </div> */}
-//     </>
-//   );
-// }
-
-// export default App;
 
 
 import "./index.css";
 import Canvas from "./Canvas";
 import data from "./data";
-import LocomotiveScroll from "locomotive-scroll";
+
 import { useEffect, useState, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Circ, Expo } from "gsap/all";
+import Lenis from "@studio-freight/lenis";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [showCanvas, setShowCanvas] = useState(false);
@@ -60,7 +18,39 @@ function App() {
   const growingSpan = useRef(null);
 
   useEffect(() => {
-    const locomotiveScroll = new LocomotiveScroll();
+
+    const lenis = new Lenis({
+
+      duration: 1.4,
+
+      smoothWheel: true,
+
+      wheelMultiplier: 1,
+
+      touchMultiplier: 2,
+
+      infinite: false,
+
+    });
+
+    function raf(time) {
+
+      lenis.raf(time);
+
+      requestAnimationFrame(raf);
+
+    }
+
+    requestAnimationFrame(raf);
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    return () => {
+
+      lenis.destroy();
+
+    };
+
   }, []);
 
   useEffect(() => {
@@ -79,24 +69,46 @@ function App() {
             ease: "power2.inOut",
           });
 
-          gsap.to(growingSpan.current, {
-            scale: 1000,
-            duration: 2,
-            ease: "power2.inOut",
-            onComplete: () => {
-              gsap.set(growingSpan.current, {
-                scale: 0,
-                clearProps: "all",
-              });
+          // gsap.to(growingSpan.current, {
+          //   scale: 1000,
+          //   duration: 2,
+          //   ease: "power2.inOut",
+          //   onComplete: () => {
+          //     gsap.set(growingSpan.current, {
+          //       scale: 0,
+          //       clearProps: "all",
+          //     });
+          //   },
+          // });
+          gsap.fromTo(
+            growingSpan.current,
+            {
+              scale: 0
             },
-          });
+            {
+              scale: 850,
+              duration: 1.6,
+              ease: "expo.inOut"
+            }
+          );
         } else {
+          // gsap.to("body", {
+          //   color: "#fff",
+          //   backgroundColor: "#000",
+          //   duration: 1.2,
+          //   ease: "power2.inOut",
+          // });
           gsap.to("body", {
-            color: "#fff",
-            backgroundColor: "#000",
-            duration: 1.2,
-            ease: "power2.inOut",
-          });
+
+            color: "#000",
+
+            backgroundColor: "#fd2c2a",
+
+            duration: 1.5,
+
+            ease: "expo.inOut",
+
+          })
         }
 
         return !prevShowCanvas;
@@ -119,10 +131,14 @@ function App() {
       ></span>
       <div className="w-full relative min-h-screen font-['Helvetica_Now_Display']">
         {showCanvas &&
-          data[0].map((canvasdets, index) => <Canvas details={canvasdets} />)}
+          data[1].map((canvasdets, index) => <Canvas key={index} details={canvasdets} />)}
         <div className="w-full relative z-50 h-screen ">
-          <nav className="w-full p-8 flex justify-between z-50">
-            <div className="brand text-2xl font-md">thirtysixstudios</div>
+          {/* <nav className="w-full p-8 flex justify-between z-50"> */}
+          <nav className="fixed top-5 left-1/2 -translate-x-1/2 w-[95%] max-w-[1500px] z-[999] rounded-full
+backdrop-blur-xl bg-white/5 border border-white/10
+px-10 py-5 flex justify-between items-center
+transition-all duration-500">
+            <div className="brand text-3xl font-semibold tracking-tight cursor-pointer hover:tracking-wider duration-500">thirtysixstudios</div>
             <div className="links flex gap-10">
               {[
                 "Home",
@@ -133,14 +149,31 @@ function App() {
                 <a
                   key={index}
                   href={`#${link.toLowerCase()}`}
-                  className="text-md hover:text-gray-300"
+                 className="
+relative
+text-[15px]
+font-medium
+tracking-wide
+text-white/80
+hover:text-white
+duration-300
+
+after:absolute
+after:left-0
+after:-bottom-1
+after:w-0
+after:h-[2px]
+after:bg-white
+after:duration-300
+hover:after:w-full
+"
                 >
                   {link}
                 </a>
               ))}
             </div>
           </nav>
-          <div className="textcontainer relative z-50 w-full px-[20%]">
+          <div className=" relative z-50 w-full px-[8%] pt-36">
             <div className="text w-[50%]">
               <h3 className="text-4xl leading-[1.2]">
                 At Thirtysixstudio, we build immersive digital experiences for
